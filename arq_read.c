@@ -66,7 +66,6 @@ lista_enc_t * ler_tabela(char * arquivo)
 		add_cauda(lista,no);
 	}
 
-	printf("\n\n Fim!\n");
 	fclose(fp);
 	return lista;
 }
@@ -88,6 +87,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 		perror("cria_aeroporto (nome)");
 		exit(EXIT_FAILURE);
 	}
+	strncpy(p->nome, buffer_nome, strlen(buffer_nome) + 1);
 
 // Code:
 	p->code = malloc(strlen(code)+1);
@@ -95,6 +95,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 		perror("cria_aeroporto (code)");
 		exit(EXIT_FAILURE);
 	}
+	strncpy(p->code, code, strlen(code) + 1);
 
 // Pais:
 	p->pais = malloc(strlen(pais)+1);
@@ -102,6 +103,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 		perror("cria_aeroporto (pais)");
 		exit(EXIT_FAILURE);
 	}
+	strncpy(p->pais, pais, strlen(pais) + 1);
 
 // Cidade:
 	p->cidade = malloc(strlen(cidade)+1);
@@ -109,6 +111,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 		perror("cria_aeroporto (cidade)");
 		exit(EXIT_FAILURE);
 	}
+	strncpy(p->cidade, cidade, strlen(cidade) + 1);
 
 // Movimento anual:
 	p->mov_anual = mov_anual;
@@ -152,31 +155,131 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 	return p;
 }
 
+/***********************************/
+/***********************************/
+/***********************************/
+/** FUNÇÕES DE RETORNO DE VALORES **/
+/***********************************/
+/***********************************/
+/***********************************/
+
+int aeroporto_get_id(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_id: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->id;
+}
+
+char * aeroporto_get_nome(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_nome: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->nome;
+}
+
+char * aeroporto_get_code(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_code: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->code;
+}
+
+char * aeroporto_get_pais(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_pais: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->pais;
+}
+
+char * aeroporto_get_cidade(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_cidade: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->cidade;
+}
+
+int aeroporto_get_movimento(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_movimento: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->mov_anual;
+}
+
+int * aeroporto_get_coord_lat(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_coord_lat: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->coord_latitude;
+}
+
+char aeroporto_get_char_lat(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_char_lat: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
+
+	return aeroporto->char_lat;
+}
 
 
+int * aeroporto_get_coord_long(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_coord_long: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
 
+	return aeroporto->coord_longitude;
+}
 
+char aeroporto_get_char_long(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_char_long: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
 
+	return aeroporto->char_long;
+}
 
+float aeroporto_get_latitude(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_latitude: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
 
+	return aeroporto->latitude;
+}
 
+float aeroporto_get_longitude(aeroporto_t * aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("aeroporto_get_longitude: ponteiro invalido");
+		exit(EXIT_FAILURE);
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	return aeroporto->longitude;
+}
