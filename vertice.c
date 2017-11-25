@@ -34,6 +34,7 @@ struct vertices {
 
 struct arestas {
 	int peso;
+	double dist;
 	vertice_t *fonte;
 	vertice_t *dest;
 
@@ -213,7 +214,7 @@ int vertice_get_id(vertice_t *vertice)
 	return vertice->id;
 }
 
-arestas_t *cria_aresta(vertice_t *fonte, vertice_t *destino, int peso)
+arestas_t *cria_aresta(vertice_t *fonte, vertice_t *destino, int peso, double dist)
 {
 	arestas_t *p;
 
@@ -227,6 +228,7 @@ arestas_t *cria_aresta(vertice_t *fonte, vertice_t *destino, int peso)
 	p->peso = peso;
 	p->fonte = fonte;
 	p->dest = destino;
+	p->dist = dist;
 
 	return p;
 }
@@ -245,6 +247,16 @@ void adiciona_aresta(vertice_t *vertice, arestas_t *aresta)
 
 }
 
+void aresta_set_dist(arestas_t *aresta, double dist)
+{
+	if (aresta == NULL){
+		fprintf(stderr, "aresta_set_dist: aresta invalida\n");
+		exit(EXIT_FAILURE);
+	}
+
+	aresta->dist = dist;
+}
+
 lista_enc_t *vertice_get_arestas(vertice_t *vertice)
 {
 	if (vertice == NULL){
@@ -257,11 +269,20 @@ lista_enc_t *vertice_get_arestas(vertice_t *vertice)
 
 int aresta_get_peso (arestas_t *aresta) {
 	if (aresta == NULL){
-		fprintf(stderr, "aresta_get_peso: aresta invalido\n");
+		fprintf(stderr, "aresta_get_peso: aresta invalida\n");
 		exit(EXIT_FAILURE);
 	}
 
 	return aresta->peso;
+}
+
+double aresta_get_dist (arestas_t *aresta){
+	if (aresta == NULL){
+		fprintf(stderr, "aresta_get_dist: aresta invalida\n");
+		exit(EXIT_FAILURE);
+	}
+
+	return aresta->dist;
 }
 
 vertice_t *aresta_get_fonte(arestas_t *aresta)

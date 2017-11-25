@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
+#include <math.h>
 #include "grafo.h"
 #include "vertice.h"
 
@@ -16,6 +17,9 @@
 #define TRUE 1
 
 #define INFINITO INT_MAX
+
+#define RAIO_TERRA 	6372
+#define CONST_PI	3.1415926536
 
 //#define DEBUG
 
@@ -152,16 +156,6 @@ void dfs(grafo_t *grafo, vertice_t* inicial)        // Busca em profundidade    
 	}
 }
 
-no_t * obter_lista_vertices(grafo_t *grafo)
-{
-	if (grafo == NULL)	{
-			fprintf(stderr,"grafo_adicionar_vertice: grafo invalido!");
-			exit(EXIT_FAILURE);
-	}
-
-	return grafo->vertices;
-}
-
 void teste_bfs (grafo_t * grafo, vertice_t * inicial)
 {
 	no_t* no_vertice = obter_cabeca(obter_lista_vertices(grafo));
@@ -284,43 +278,34 @@ vertice_t* procura_vertice(grafo_t *grafo, int id)
 	return NULL;
 }
 
-void adiciona_adjacentes(grafo_t *grafo, vertice_t *vertice, int n, ...)
+void adiciona_adjacentes(grafo_t *grafo, vertice_t *vertice, vertice_t *sucessor)
 {
-	va_list argumentos;
-	vertice_t *sucessor;
 	arestas_t *aresta;
 
 	int id_sucessor;
 	int peso;
-        int x;
+	double dist;
+	int x;
 
-	/* Initializing arguments to store all values after num */
-	va_start (argumentos, n);
+	peso = get_dificuldade_vertices(vertice, sucessor);
+	dist = haversine(aeroporto_get_latitude(obtem_aeroporto(vertice)),
+					aeroporto_get_longitude(obtem_aeroporto(vertice)),
+					aeroporto_get_latitude(obtem_aeroporto(sucessor)),
+					aeroporto_get_longitude(obtem_aeroporto(sucessor)));
 
-	for (x = 0; x < n; x=x+2 )
-	{
-		id_sucessor = va_arg(argumentos, int);
-		peso = va_arg(argumentos, int);
+	if (sucessor == NULL) {
+		fprintf(stderr, "adiciona_adjacentes: sucessor nao encontrado no grafo\n");
+		exit(EXIT_FAILURE);
+	}
 
-		sucessor = procura_vertice(grafo, id_sucessor);
-
-		if (sucessor == NULL) {
-			fprintf(stderr, "adiciona_adjacentes: sucessor nao encontrado no grafo\n");
-			exit(EXIT_FAILURE);
-		}
-
-		aresta = cria_aresta(vertice, sucessor,peso);
-		adiciona_aresta(vertice, aresta);
+	aresta = cria_aresta(vertice, sucessor,peso,dist);
+	adiciona_aresta(vertice, aresta);
 
 #ifdef DEBUG
 		printf("\tvertice: %d\n", vertice_get_id(vertice));
 		printf("\tsucessor: %d\n", id_sucessor);
 		printf("\tpeso: %d\n", peso);
 #endif
-
-	}
-
-	va_end (argumentos);
 }
 
 void exportar_grafo_dot(const char *filename, grafo_t *grafo)
@@ -370,10 +355,9 @@ void exportar_grafo_dot(const char *filename, grafo_t *grafo)
 			//marca como exportada esta aresta
 			aresta_set_status(aresta, EXPORTADA);
 			adjacente = aresta_get_adjacente(aresta);
-
 			//marca contra-aresta também como exporta no caso de grafo não direcionados
-			contra_aresta = procurar_adjacente(adjacente, vertice);
 
+			contra_aresta = procurar_adjacente(adjacente, vertice);
 			aresta_set_status(contra_aresta, EXPORTADA); /**PROBLEMA AQUI, ARESTA NULA**/
 
 			//obtem peso
@@ -391,7 +375,6 @@ void exportar_grafo_dot(const char *filename, grafo_t *grafo)
 	fprintf(file, "}\n");
 	fclose(file);
 }
-
 
 void libera_grafo (grafo_t *grafo){
 	no_t *no_vert;
@@ -440,3 +423,64 @@ void libera_grafo (grafo_t *grafo){
 	free(grafo->vertices);
 	free(grafo);
 }
+
+no_t * obter_lista_vertices(grafo_t *grafo)
+{
+	if (grafo == NULL)	{
+			fprintf(stderr,"obter_lista_vertices: grafo invalido!");
+			exit(EXIT_FAILURE);
+	}
+
+    no_t* cabeca_lista = obter_cabeca(grafo->vertices);
+
+	return cabeca_lista;
+}
+
+int obter_grafo_size(grafo_t *grafo)
+{
+	if (grafo == NULL)	{
+			fprintf(stderr,"grafo_obter_size: grafo invalido!");
+			exit(EXIT_FAILURE);
+	}
+
+	return grafo->n_vertices;
+}
+
+int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2)
+{
+	double dificuldade = haversine(aeroporto_get_latitude(obtem_aeroporto(vertice_1)),
+									aeroporto_get_longitude(obtem_aeroporto(vertice_1)),
+									aeroporto_get_latitude(obtem_aeroporto(vertice_2)),
+									aeroporto_get_longitude(obtem_aeroporto(vertice_2)));
+	/** Até aqui, a dificuldade é apenas a distância entre os aeroportos
+		O movimento anual deverá ser incluído de alguma forma. Quanto maior o movimento,
+		melhor é a estrutura do aeroporto e consequentemente mais fácil será o voo.
+
+		Desta forma, a dificuldade deverá ser inversamente proporcional à movimentação
+		anual.
+	**/
+
+	double movimento = (double)(aeroporto_get_movimento(obtem_aeroporto(vertice_1))) +
+					   (double)(aeroporto_get_movimento(obtem_aeroporto(vertice_2)));
+	/** O movimento está na ordem de milhares, será dividido por 10000 para adequar-se a uma ordem boa **/
+
+	movimento /= 10000;
+
+	dificuldade += dificuldade/movimento;
+
+	return dificuldade;
+}
+
+double haversine(double latitude_1, double longitude_1, double latitude_2, double longitude_2)
+{
+	latitude_1 *= CONST_PI/180;
+	latitude_2 *= CONST_PI/180;
+	longitude_1 *= CONST_PI/180;
+	longitude_2 *= CONST_PI/180;
+	double dist = RAIO_TERRA;
+
+	dist *= acos(sin(latitude_1)*sin(latitude_2) + cos(latitude_1)*cos(latitude_2)*cos(longitude_1-longitude_2));
+
+	return dist;
+}
+

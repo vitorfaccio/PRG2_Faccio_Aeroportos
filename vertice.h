@@ -19,11 +19,13 @@ typedef struct arestas arestas_t;
 typedef enum 	status_aresta { VAZIO, EXPORTADA } status_aresta_t;
 
 vertice_t*		cria_vertice(int id, aeroporto_t* aeroporto);
-arestas_t*		cria_aresta(vertice_t *fonte, vertice_t *destino, int peso);
+arestas_t*		cria_aresta(vertice_t *fonte, vertice_t *destino, int peso, double dist);
 int 			vertice_get_id(vertice_t *vertice);
 void 			adiciona_aresta(vertice_t *vertice, arestas_t *aresta);
+void			aresta_set_dist(arestas_t *aresta, double dist);
 lista_enc_t*	vertice_get_arestas(vertice_t *vertice);
 int 			aresta_get_peso (arestas_t *aresta);
+double			aresta_get_dist (arestas_t *aresta);
 vertice_t*		aresta_get_fonte(arestas_t *aresta);
 vertice_t* 		aresta_get_adjacente(arestas_t *aresta);
 arestas_t* 		procurar_adjacente(vertice_t *vertice, vertice_t *adjacente);

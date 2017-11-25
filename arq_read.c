@@ -24,8 +24,8 @@ struct dados_aeroporto {
 	char char_lat;
 	int coord_longitude[3];
 	char char_long;
-	float latitude;
-	float longitude;
+	double latitude;
+	double longitude;
 };
 
 lista_enc_t * ler_tabela(char * arquivo)
@@ -129,7 +129,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 	p->char_long = char_long;
 
 // Latitude exata:
-	p->latitude = (float)coord_latitude[0] + ((float)coord_latitude[1])/60 + ((float)coord_latitude[2])/3600;
+	p->latitude = (double)coord_latitude[0] + ((double)coord_latitude[1])/60 + ((double)coord_latitude[2])/3600;
 	switch(char_lat){
 	case 'S':
 		p->latitude *= -1;
@@ -141,7 +141,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 	}
 
 // Longitude exata:
-	p->longitude = (float)coord_longitude[0] + ((float)coord_longitude[1])/60 + ((float)coord_longitude[2])/3600;
+	p->longitude = (double)coord_longitude[0] + ((double)coord_longitude[1])/60 + ((double)coord_longitude[2])/3600;
 	switch(char_long){
 	case 'W':
 		p->longitude *= -1;
@@ -264,7 +264,7 @@ char aeroporto_get_char_long(aeroporto_t * aeroporto)
 	return aeroporto->char_long;
 }
 
-float aeroporto_get_latitude(aeroporto_t * aeroporto)
+double aeroporto_get_latitude(aeroporto_t * aeroporto)
 {
 	if (aeroporto == NULL){
 		perror("aeroporto_get_latitude: ponteiro invalido");
@@ -274,7 +274,7 @@ float aeroporto_get_latitude(aeroporto_t * aeroporto)
 	return aeroporto->latitude;
 }
 
-float aeroporto_get_longitude(aeroporto_t * aeroporto)
+double aeroporto_get_longitude(aeroporto_t * aeroporto)
 {
 	if (aeroporto == NULL){
 		perror("aeroporto_get_longitude: ponteiro invalido");

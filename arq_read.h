@@ -21,8 +21,6 @@
 #define TAM_BUFFER_P	50
 #define TAM_BUFFER_PP 	10
 
-#define RAIO_TERRA 	6371
-
 typedef struct dados_aeroporto aeroporto_t;
 lista_enc_t * ler_tabela(char * arquivo);
 aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pais, char * cidade, int mov_anual, int * coord_latitude, char char_lat, int * coord_longitude, char char_long);
@@ -40,7 +38,7 @@ int * 	aeroporto_get_coord_lat(aeroporto_t * aeroporto);
 char 	aeroporto_get_char_lat(aeroporto_t * aeroporto);
 int * 	aeroporto_get_coord_long(aeroporto_t * aeroporto);
 char 	aeroporto_get_char_long(aeroporto_t * aeroporto);
-float 	aeroporto_get_latitude(aeroporto_t * aeroporto);
-float 	aeroporto_get_longitude(aeroporto_t * aeroporto);
+double 	aeroporto_get_latitude(aeroporto_t * aeroporto);
+double 	aeroporto_get_longitude(aeroporto_t * aeroporto);
 
 #endif // ARQ_READ_H_INCLUDED
