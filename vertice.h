@@ -82,6 +82,4 @@ vertice_t * 	obtem_pai(vertice_t* vertice);
 int 			obtem_visita(vertice_t* vertice);
 aeroporto_t * 	obtem_aeroporto(vertice_t* vertice);
 
-
-
 #endif /* GRAFO_VERTICE_H_ */

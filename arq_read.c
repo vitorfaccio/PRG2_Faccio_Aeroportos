@@ -4,7 +4,8 @@
  Author      : Vítor Faccio
  Version     : 1.0
  Copyright   : Vítor Faccio, todos os direitos reservados
- Descrição	 : Leitura da planilha em .ods com as informações dos aeroportos
+ Descrição	 : Leitura das planilhas em .ods com as informações dos
+ aeroportos e dos aviões
  ============================================================================
  */
 
@@ -12,6 +13,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "arq_read.h"
+
+#define TAM_BUFFER_G 	200
+#define TAM_BUFFER_M 	100
+#define TAM_BUFFER_P	50
+#define TAM_BUFFER_PP 	10
 
 struct dados_aeroporto {
 	int id;
@@ -28,7 +34,13 @@ struct dados_aeroporto {
 	double longitude;
 };
 
-lista_enc_t * ler_tabela(char * arquivo)
+struct dados_aeronave {
+	int id;
+	char *nome;
+	int autonomia;
+};
+
+lista_enc_t * ler_tabela_aeroportos(char * arquivo)
 {
 	char buffer[TAM_BUFFER_G];
 
@@ -45,7 +57,7 @@ lista_enc_t * ler_tabela(char * arquivo)
 	fp = fopen(arquivo, "r");
 
 	if (fp == NULL){
-		perror("ler_arquivo");
+		perror("ler_tabela_aeroportos:");
 		exit(EXIT_FAILURE);
 	}
 
@@ -63,6 +75,43 @@ lista_enc_t * ler_tabela(char * arquivo)
 		}
 		aeroporto = cria_aeroporto(id,buffer_nome,code,pais,cidade,mov_anual,coord_latitude,char_lat,coord_longitude,char_long);
 		no = cria_no(aeroporto);
+		add_cauda(lista,no);
+	}
+
+	fclose(fp);
+	return lista;
+}
+
+lista_enc_t * ler_tabela_aeronaves(char * arquivo)
+{
+	char buffer[TAM_BUFFER_P];
+	int id, autonomia;
+	char buffer_nome[TAM_BUFFER_P];
+
+	int ret = 0;
+	FILE *fp;
+    lista_enc_t *lista;
+    no_t *no;
+    aeronave_t *aeronave;
+
+	fp = fopen(arquivo, "r");
+
+	if (fp == NULL){
+		perror("ler_tabela_aeronaves:");
+		exit(EXIT_FAILURE);
+	}
+
+	lista = cria_lista_enc();
+	fgets(buffer,TAM_BUFFER_P,fp);
+	while(fgets(buffer,TAM_BUFFER_P,fp) != 0)
+	{
+		ret = sscanf(buffer, "%d,%50[^,],%d\n",&id,buffer_nome,&autonomia);
+		if (ret != 3) {
+			fprintf(stderr, "Arquivo de entrada invalido\n");
+			exit(EXIT_FAILURE);
+		}
+		aeronave = cria_aeronave(id,buffer_nome,autonomia);
+		no = cria_no(aeronave);
 		add_cauda(lista,no);
 	}
 
@@ -155,6 +204,29 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 	return p;
 }
 
+aeronave_t * cria_aeronave(int id, char * buffer_nome, int autonomia)
+{
+	aeronave_t * p = malloc(sizeof(aeronave_t));
+	if (p == NULL){
+		perror("cria_aeronave (struct)");
+		exit(EXIT_FAILURE);
+	}
+// ID:
+	p->id = id;
+
+// Nome:
+	p->nome = malloc(strlen(buffer_nome)+1);
+	if (p == NULL){
+		perror("cria_aeroporto (nome)");
+		exit(EXIT_FAILURE);
+	}
+	strncpy(p->nome, buffer_nome, strlen(buffer_nome) + 1);
+
+// Autonomia:
+	p->autonomia = autonomia;
+
+	return p;
+}
 /***********************************/
 /***********************************/
 /***********************************/
@@ -243,7 +315,6 @@ char aeroporto_get_char_lat(aeroporto_t * aeroporto)
 	return aeroporto->char_lat;
 }
 
-
 int * aeroporto_get_coord_long(aeroporto_t * aeroporto)
 {
 	if (aeroporto == NULL){
@@ -282,4 +353,35 @@ double aeroporto_get_longitude(aeroporto_t * aeroporto)
 	}
 
 	return aeroporto->longitude;
+}
+
+int aeronave_obter_id(aeronave_t* aeronave)
+{
+	if (aeronave == NULL)	{
+			fprintf(stderr,"aeronave_obter_id: aeronave invalida!");
+			exit(EXIT_FAILURE);
+	}
+
+	return aeronave->id;
+}
+
+
+char* aeronave_obter_nome(aeronave_t* aeronave)
+{
+	if (aeronave == NULL)	{
+			fprintf(stderr,"aeronave_obter_nome: aeronave invalida!");
+			exit(EXIT_FAILURE);
+	}
+
+	return aeronave->nome;
+}
+
+int aeronave_obter_autonomia(aeronave_t* aeronave)
+{
+	if (aeronave == NULL)	{
+			fprintf(stderr,"aeronave_obter_autonomia: aeronave invalida!");
+			exit(EXIT_FAILURE);
+	}
+
+	return aeronave->autonomia;
 }

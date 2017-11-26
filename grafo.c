@@ -1,8 +1,11 @@
 /*
- * grafo.c
- *
- *  Created on: Jul 5, 2016
- *      Author: Renan Augusto Starke
+ ============================================================================
+ Nome        : grafo.c
+ Autor		 : Vítor Faccio
+ Versão	     : 1.0
+ Copyright   : Vítor Faccio, todos os direitos reservados
+ Descrição	 :
+ ============================================================================
  */
 
 #include <stdio.h>
@@ -11,7 +14,6 @@
 #include <limits.h>
 #include <math.h>
 #include "grafo.h"
-#include "vertice.h"
 
 #define FALSE 0
 #define TRUE 1
@@ -278,20 +280,15 @@ vertice_t* procura_vertice(grafo_t *grafo, int id)
 	return NULL;
 }
 
-void adiciona_adjacentes(grafo_t *grafo, vertice_t *vertice, vertice_t *sucessor)
+void adiciona_adjacentes(grafo_t *grafo, vertice_t *vertice, vertice_t *sucessor, double dist)
 {
 	arestas_t *aresta;
 
 	int id_sucessor;
 	int peso;
-	double dist;
 	int x;
 
-	peso = get_dificuldade_vertices(vertice, sucessor);
-	dist = haversine(aeroporto_get_latitude(obtem_aeroporto(vertice)),
-					aeroporto_get_longitude(obtem_aeroporto(vertice)),
-					aeroporto_get_latitude(obtem_aeroporto(sucessor)),
-					aeroporto_get_longitude(obtem_aeroporto(sucessor)));
+	peso = get_dificuldade_vertices(vertice, sucessor,dist);
 
 	if (sucessor == NULL) {
 		fprintf(stderr, "adiciona_adjacentes: sucessor nao encontrado no grafo\n");
@@ -446,26 +443,13 @@ int obter_grafo_size(grafo_t *grafo)
 	return grafo->n_vertices;
 }
 
-int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2)
+int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double dificuldade)
 {
-	double dificuldade = haversine(aeroporto_get_latitude(obtem_aeroporto(vertice_1)),
-									aeroporto_get_longitude(obtem_aeroporto(vertice_1)),
-									aeroporto_get_latitude(obtem_aeroporto(vertice_2)),
-									aeroporto_get_longitude(obtem_aeroporto(vertice_2)));
-	/** Até aqui, a dificuldade é apenas a distância entre os aeroportos
-		O movimento anual deverá ser incluído de alguma forma. Quanto maior o movimento,
-		melhor é a estrutura do aeroporto e consequentemente mais fácil será o voo.
-
-		Desta forma, a dificuldade deverá ser inversamente proporcional à movimentação
-		anual.
-	**/
-
 	double movimento = (double)(aeroporto_get_movimento(obtem_aeroporto(vertice_1))) +
 					   (double)(aeroporto_get_movimento(obtem_aeroporto(vertice_2)));
 	/** O movimento está na ordem de milhares, será dividido por 10000 para adequar-se a uma ordem boa **/
 
 	movimento /= 10000;
-
 	dificuldade += dificuldade/movimento;
 
 	return dificuldade;
