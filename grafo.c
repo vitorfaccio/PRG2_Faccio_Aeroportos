@@ -31,6 +31,22 @@ struct grafos {
 	lista_enc_t *vertices;
 };
 
+no_t* busca_min_dist (lista_enc_t* lista)
+{
+	int dist_atual, dist_min = INFINITO - 1;
+	no_t* no_distmin = NULL;
+	no_t* no_vert = obter_cabeca(lista);
+	while(no_vert != NULL){
+		dist_atual = obtem_dist_dijkstra(obter_dado(no_vert));
+		if(dist_atual <= dist_min){
+			dist_min = dist_atual;
+			no_distmin = no_vert;
+		}
+		no_vert = obtem_proximo(no_vert);
+	}
+	return no_distmin;
+}
+
 pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 {
     if (grafo == NULL)	{
@@ -38,28 +54,32 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 			exit(EXIT_FAILURE);
 	}
 
-	fila_t* fila_prioridade = cria_fila();
+	lista_enc_t* lista_prioridade = cria_lista_enc();
 	pilha_t* pilha_caminho = cria_pilha();
 
 	int i, alt;
     no_t* no_aresta;
+    no_t* no_vertice;
     arestas_t* aresta;
     vertice_t* vertice_v;
 
 	modifica_dist_dijkstra(fonte,0);
 	modifica_anterior_dijkstra(fonte,NULL);
-	enqueue(fonte,fila_prioridade);
+	no_vertice = cria_no(fonte);
+	add_cauda(lista_prioridade,no_vertice);
 
     for(i=1;i<=grafo->n_vertices;i++){
 		if(procura_vertice(grafo,i) != fonte){
 			modifica_dist_dijkstra(procura_vertice(grafo,i),INFINITO);
 			modifica_anterior_dijkstra(procura_vertice(grafo,i),NULL);
-			enqueue(procura_vertice(grafo,i),fila_prioridade);
+			no_vertice = cria_no(procura_vertice(grafo,i));
+			add_cauda(lista_prioridade,no_vertice);
 		}
     }
 
-	while(fila_vazia(fila_prioridade) == FALSE){
-		vertice_v = dequeue(fila_prioridade);
+	no_vertice = busca_min_dist(lista_prioridade);
+	vertice_v = remover_no(lista_prioridade,no_vertice);
+	while(no_vertice != NULL){
 		modifica_visita_dijkstra(vertice_v,TRUE);
 
         no_aresta = obter_cabeca(vertice_get_arestas(vertice_v));
@@ -78,6 +98,9 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 					aresta = obter_dado(no_aresta);
 			}
 		}
+		no_vertice = busca_min_dist(lista_prioridade);
+		if(no_vertice != NULL)
+			vertice_v = remover_no(lista_prioridade,no_vertice);
 	}
 
 
@@ -88,7 +111,7 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 	}
     push(fonte,pilha_caminho);
 
-	libera_fila(fila_prioridade);
+	free(lista_prioridade);
     return pilha_caminho;
 
 }
@@ -450,9 +473,10 @@ int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double 
 	/** O movimento está na ordem de milhares, será dividido por 10000 para adequar-se a uma ordem boa **/
 
 	movimento /= 10000;
-	dificuldade += dificuldade/movimento;
 
-	return dificuldade;
+	//dificuldade += dificuldade/movimento;
+
+	return (int)dificuldade;
 }
 
 double haversine(double latitude_1, double longitude_1, double latitude_2, double longitude_2)

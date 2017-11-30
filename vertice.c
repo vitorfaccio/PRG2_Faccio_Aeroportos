@@ -10,6 +10,9 @@
 
 #include "vertice.h"
 
+#define FALSE 0
+#define TRUE 1
+
 struct vertices {
 	int id;
 	aeroporto_t *aeroporto;
@@ -201,6 +204,7 @@ vertice_t *cria_vertice(int id, aeroporto_t* aeroporto)
 	p->arestas = cria_lista_enc();
 	p->id_grupo = -1;
 	p->pai = NULL;
+	p->visita_dijkstra = FALSE;
 
 	return p;
 }

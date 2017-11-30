@@ -69,7 +69,7 @@ printf("Autonomia da aeronave: %d km\n",aeronave_obter_autonomia(info_obter_aero
 
 
 
-	exportar_grafo_dot("grafo.dot", grafo);
+	exportar_grafo_dot("grafo_semmovimento.dot", grafo);
 
     return 0;
 }

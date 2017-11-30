@@ -36,6 +36,7 @@ no_t*			busca_menos_distante(lista_enc_t *Q);
 int 			busca_vertice(lista_enc_t *lista, vertice_t *vertice_procurado);
 lista_enc_t*	componentes_conexos(grafo_t *grafo);
 
+no_t* 			busca_min_dist (lista_enc_t* lista);
 pilha_t* 		dijkstra(grafo_t *grafo, vertice_t *fonte, vertice_t *destino);
 void 			bfs(grafo_t *grafo, vertice_t* inicial);
 void 			dfs(grafo_t *grafo, vertice_t* inicial);
