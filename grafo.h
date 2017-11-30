@@ -42,27 +42,15 @@ void libera_grafo (grafo_t *grafo);
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
-
-/* Menor caminho entre todos os nos:
- * retorna um pilha do caminho entre fonte e destino  */
-pilha_t* dijkstra(grafo_t *grafo, vertice_t *fonte, vertice_t *destino);
-
-/* Procura um vertice com menor a menor distancia
- * Ver: struct vertices */
 no_t *busca_menos_distante(lista_enc_t *Q);
-
-/* Retorna TRUE se vertice_procurado estiver no conjunto Q*/
 int busca_vertice(lista_enc_t *lista, vertice_t *vertice_procurado);
-
-
 lista_enc_t* componentes_conexos(grafo_t *grafo);
 
-
-
+no_t* busca_min_dist (lista_enc_t* lista);
+pilha_t* dijkstra(grafo_t *grafo, vertice_t *fonte, vertice_t *destino);
 void bfs(grafo_t *grafo, vertice_t* inicial);
 void dfs(grafo_t *grafo, vertice_t* inicial);
-no_t * obter_lista_vertices(grafo_t *grafo);
 void teste_bfs (grafo_t * grafo, vertice_t * inicial);
 void teste_dfs (grafo_t * grafo, vertice_t * inicial);
-
+no_t * obter_lista_vertices(grafo_t *grafo);
 #endif /* GRAFO_GRAFO_H_ */

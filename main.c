@@ -54,6 +54,9 @@ no_t* no_vertice;
 	vertice = grafo_adicionar_vertice(grafo,9);
 	enqueue(vertice, fila);
 
+	vertice = grafo_adicionar_vertice(grafo,10);
+	enqueue(vertice, fila);
+
         // constrói grafo
 	while (!fila_vazia(fila))	{
 		vertice = dequeue(fila);
@@ -85,7 +88,10 @@ no_t* no_vertice;
 				adiciona_adjacentes(grafo, vertice, 6, 2, 13, 5, 7, 6, 6);
 				break;
 			case 9:
-				adiciona_adjacentes(grafo, vertice, 4, 1, 4, 3, 3);
+				adiciona_adjacentes(grafo, vertice, 6, 1, 4, 3, 3, 10, 4);
+				break;
+			case 10:
+				adiciona_adjacentes(grafo, vertice, 2, 9, 4);
 				break;
 			default:
 				break;
@@ -93,14 +99,12 @@ no_t* no_vertice;
 	}
 
 	exportar_grafo_dot("lista_grafo.dot", grafo);
-//  Ordenação
-//	exportar_grafo_dot("grafo.dot", grafo);
 
-    pilha_t* pilha = dijkstra(grafo,procura_vertice(grafo,7),procura_vertice(grafo,2));
+    pilha_t* pilha = dijkstra(grafo,procura_vertice(grafo,5),procura_vertice(grafo,10));
     vertice_t* vert;
     int i = 1;
 
-    printf("Menor caminho de 7 a 2: \n");
+    printf("Menor caminho de 5 a 10: \n");
     while(pilha_vazia(pilha) == 0){
         vert = pop(pilha);
         printf("Vertice %d: %d \n",i++,vertice_get_id(vert));

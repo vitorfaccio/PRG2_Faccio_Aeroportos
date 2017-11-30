@@ -94,7 +94,7 @@ void add_cabeca(lista_enc_t *lista, no_t* elemento)
         // Remove qualquer ligacao antiga
         desliga_no(elemento);
         // Liga cauda da lista com novo elemento
-        liga_nos(elemento,lista->cauda);
+        liga_nos(elemento,lista->cabeca);
 
         lista->cabeca = elemento;
         lista->tamanho++;
@@ -236,7 +236,7 @@ no_t *remover_cabeca(lista_enc_t *lista)
 void *remover_no(lista_enc_t *lista, no_t *no_removido)
 {
 	no_t *meu_no;
-	void *dado;
+	void *dado = NULL;
 
 	no_t *proximo;
 	no_t *anterior;

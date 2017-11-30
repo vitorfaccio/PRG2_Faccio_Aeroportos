@@ -25,6 +25,22 @@ struct grafos {
 	lista_enc_t *vertices;
 };
 
+no_t* busca_min_dist (lista_enc_t* lista)
+{
+	int dist_atual, dist_min = INFINITO - 1;
+	no_t* no_distmin = NULL;
+	no_t* no_vert = obter_cabeca(lista);
+	while(no_vert != NULL){
+		dist_atual = obtem_dist_dijkstra(obter_dado(no_vert));
+		if(dist_atual <= dist_min){
+			dist_min = dist_atual;
+			no_distmin = no_vert;
+		}
+		no_vert = obtem_proximo(no_vert);
+	}
+	return no_distmin;
+}
+
 pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 {
     if (grafo == NULL)	{
@@ -32,31 +48,36 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 			exit(EXIT_FAILURE);
 	}
 
-	fila_t* fila_prioridade = cria_fila();
+	lista_enc_t* lista_prioridade = cria_lista_enc();
 	pilha_t* pilha_caminho = cria_pilha();
 
 	int i, alt;
     no_t* no_aresta;
+    no_t* no_vertice;
     arestas_t* aresta;
     vertice_t* vertice_v;
 
 	modifica_dist_dijkstra(fonte,0);
 	modifica_anterior_dijkstra(fonte,NULL);
-	enqueue(fonte,fila_prioridade);
+	no_vertice = cria_no(fonte);
+	add_cauda(lista_prioridade,no_vertice);
 
     for(i=1;i<=grafo->n_vertices;i++){
 		if(procura_vertice(grafo,i) != fonte){
 			modifica_dist_dijkstra(procura_vertice(grafo,i),INFINITO);
 			modifica_anterior_dijkstra(procura_vertice(grafo,i),NULL);
-			enqueue(procura_vertice(grafo,i),fila_prioridade);
+			no_vertice = cria_no(procura_vertice(grafo,i));
+			add_cauda(lista_prioridade,no_vertice);
 		}
     }
 
-	while(fila_vazia(fila_prioridade) == FALSE){
-		vertice_v = dequeue(fila_prioridade);
+	no_vertice = busca_min_dist(lista_prioridade);
+	vertice_v = remover_no(lista_prioridade,no_vertice);
+	while(no_vertice != NULL){
 		modifica_visita_dijkstra(vertice_v,TRUE);
 
         no_aresta = obter_cabeca(vertice_get_arestas(vertice_v));
+printf("\n vertice: %d - cabeca do no_aresta : %d\n",vertice_get_id(vertice_v),vertice_get_id(aresta_get_adjacente(obter_dado(no_aresta))));
         if(no_aresta != NULL){
 			aresta = obter_dado(no_aresta);
 			while(no_aresta != NULL){
@@ -72,6 +93,9 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 					aresta = obter_dado(no_aresta);
 			}
 		}
+		no_vertice = busca_min_dist(lista_prioridade);
+		if(no_vertice != NULL)
+			vertice_v = remover_no(lista_prioridade,no_vertice);
 	}
 
 
@@ -82,7 +106,7 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 	}
     push(fonte,pilha_caminho);
 
-	libera_fila(fila_prioridade);
+	free(lista_prioridade);
     return pilha_caminho;
 
 }
@@ -153,16 +177,6 @@ void dfs(grafo_t *grafo, vertice_t* inicial)        // Busca em profundidade    
 	}
 }
 
-no_t * obter_lista_vertices(grafo_t *grafo)
-{
-	if (grafo == NULL)	{
-			fprintf(stderr,"grafo_adicionar_vertice: grafo invalido!");
-			exit(EXIT_FAILURE);
-	}
-
-	return grafo->vertices;
-}
-
 void teste_bfs (grafo_t * grafo, vertice_t * inicial)
 {
 	no_t* no_vertice = obter_cabeca(obter_lista_vertices(grafo));
@@ -204,6 +218,15 @@ void teste_dfs (grafo_t * grafo, vertice_t * inicial)
 	}
 }
 //--------------------------------------------------------------------------------------
+no_t * obter_lista_vertices(grafo_t *grafo)
+{
+	if (grafo == NULL)	{
+			fprintf(stderr,"grafo_adicionar_vertice: grafo invalido!");
+			exit(EXIT_FAILURE);
+	}
+
+	return grafo->vertices;
+}
 
 grafo_t *cria_grafo(int id)
 {

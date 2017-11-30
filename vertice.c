@@ -10,6 +10,9 @@
 
 #include "vertice.h"
 
+#define FALSE 0
+#define TRUE 1
+
 struct vertices {
 	int id;
 	lista_enc_t *arestas;
@@ -176,6 +179,7 @@ vertice_t *cria_vertice(int id)
 	p->arestas = cria_lista_enc();
 	p->id_grupo = -1;
 	p->pai = NULL;
+	p->visita_dijkstra = FALSE;
 
 	return p;
 }
