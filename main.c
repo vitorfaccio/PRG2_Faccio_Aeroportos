@@ -11,14 +11,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "grafo.h"
-#include "arq_read.h"
 
 #define FALSE 0
 #define TRUE 1
 
 int main()
 {
-    lista_enc_t* lista_vertices_aeroportos = ler_tabela_aeroportos("PRG2_Faccio_ListaAeroportos_v1.csv");
+    lista_enc_t* lista_vertices_aeroportos = ler_tabela_aeroportos("PRG2_Faccio_ListaAeroportos_v2.csv");
     lista_enc_t* lista_aeronaves = ler_tabela_aeronaves("PRG2_Faccio_ListaAeronaves_v1.csv");
 	aeroporto_t* aeroporto;
 	grafo_t* grafo;
@@ -85,11 +84,9 @@ printf("Autonomia da aeronave: %d km\n",aeronave_obter_autonomia(info_obter_aero
         printf("Vertice %d: %s \n",i++,aeroporto_get_cidade(obtem_aeroporto(vert)));
     }
 
-
-
-
-
 	exportar_grafo_dot("grafo_semmovimento.dot", grafo);
+
+	/** Liberar memória: **/
 
     return 0;
 }

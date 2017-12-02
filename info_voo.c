@@ -53,7 +53,7 @@ void info_set_aeronave(info_t *info, lista_enc_t *lista_aeronaves)
 
 	int id_aeronave;
 
-	printf("\tOla usuario, seja bem-vindo! \nAbaixo sao listados os avioes disponiveis para seu voo, com a respectiva autonomia de cada um.\n");
+	printf("\tOla usuario, seja bem-vindo! \nAbaixo sao listados os avioes disponiveis para seu voo, com a respectiva autonomia de cada um.\n\n");
 
 	no_t* no_aeronave = obter_cabeca(lista_aeronaves);
 
@@ -68,6 +68,10 @@ void info_set_aeronave(info_t *info, lista_enc_t *lista_aeronaves)
 	/** Receber a aeronave utilizada: **/
 	printf("\nDigite o ID da aeronave a ser utilizada.\n");
 	scanf("%d",&id_aeronave);
+	while((id_aeronave > lista_tamanho(lista_aeronaves)) || (id_aeronave < 1)){
+		printf("\nO ID informado nao consta nos registros. Por favor insira um valido.\n");
+		scanf("%d",&id_aeronave);
+	}
 
 	no_aeronave = obter_cabeca(lista_aeronaves);
 	while(no_aeronave != NULL){
@@ -112,6 +116,11 @@ void info_set_aeroportos(info_t *info, void *pointer)
 	/** Receber o aeroporto de origem: **/
 	printf("Digite o ID do aeroporto de origem.\n");
 	scanf("%d",&id_origem);
+	while((id_origem > lista_tamanho(obter_lista_enc_vertices(grafo)) || (id_origem < 1))){
+		printf("\nO ID de aeroporto informado nao consta nos registros. Por favor insira um valido.\n");
+		scanf("%d",&id_origem);
+	}
+
 	id_destino = id_origem;
 	info->origem = obtem_aeroporto(procura_vertice(grafo,id_origem));
 
@@ -119,9 +128,9 @@ void info_set_aeroportos(info_t *info, void *pointer)
 	printf("\nDigite o ID do aeroporto de Destino.\n");
 	while(1){
 		scanf("%d",&id_destino);
-		if(id_destino != id_origem)
+		if((id_destino != id_origem) && (id_destino > 0) && (id_destino <= lista_tamanho(obter_lista_enc_vertices(grafo))))
 			break;
-		printf("ID invalido, voce selecionou o proprio aeroporto de origem. Reinsira o aeroporto de destino.\n");
+		printf("ID invalido, voce selecionou um aeroporto indisponivel ou inexistente. Por favor insira um valido.\n");
 	}
 	info->destino = obtem_aeroporto(procura_vertice(grafo,id_destino));
 }

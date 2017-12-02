@@ -29,6 +29,7 @@ vertice_t* 		procura_vertice(grafo_t *grafo, int id);
 void 			exportar_grafo_dot(const char *filename, grafo_t *grafo);
 void 			libera_grafo (grafo_t *grafo);
 no_t*			obter_lista_vertices(grafo_t *grafo);
+lista_enc_t*	obter_lista_enc_vertices(grafo_t *grafo);
 int 			get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double dificuldade);
 double 			haversine(double latitude_1, double longitude_1, double latitude_2, double longitude_2);
 

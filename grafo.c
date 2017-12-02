@@ -456,6 +456,16 @@ no_t * obter_lista_vertices(grafo_t *grafo)
 	return cabeca_lista;
 }
 
+lista_enc_t * obter_lista_enc_vertices(grafo_t *grafo)
+{
+	if (grafo == NULL)	{
+			fprintf(stderr,"obter_lista_vertices: grafo invalido!");
+			exit(EXIT_FAILURE);
+	}
+
+	return grafo->vertices;
+}
+
 int obter_grafo_size(grafo_t *grafo)
 {
 	if (grafo == NULL)	{
@@ -474,7 +484,7 @@ int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double 
 
 	movimento /= 10000;
 
-	//dificuldade += dificuldade/movimento;
+	dificuldade += dificuldade/movimento;	/**	CARECE DE AJUSTES **/
 
 	return (int)dificuldade;
 }
