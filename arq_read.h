@@ -2,7 +2,7 @@
  ============================================================================
  Nome        : arq_read.h
  Autor		 : Vítor Faccio
- Versão	     : 1.0
+ Versão	     : 2.0
  Copyright   : Vítor Faccio, todos os direitos reservados
  Descrição	 : Leitura da planilha em .ods com as informações dos aeroportos
 

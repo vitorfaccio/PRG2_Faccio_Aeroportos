@@ -1,8 +1,11 @@
 /*
- * vertice.c
- *
- *  Created on: Jul 5, 2016
- *      Author: Renan Augusto Starke
+ ============================================================================
+ Nome        : vertice.c
+ Autor		 : Renan Starke - Modificado por Vítor Faccio
+ Versão	     : 2.0
+ Copyright   : Renan Starke, todos os direitos reservados
+ Descrição	 :
+ ============================================================================
  */
 
 #include <stdlib.h>
@@ -16,6 +19,7 @@
 struct vertices {
 	int id;
 	aeroporto_t *aeroporto;
+	int estado_visitavel;
 	lista_enc_t *arestas;
 
 	/* Informações para busca em largura */
@@ -116,6 +120,16 @@ void modifica_visita_dijkstra(vertice_t* vertice, int n)
     vertice->visita_dijkstra = n;
 }
 
+void modifica_estado_visitavel(vertice_t* vertice, int n)
+{
+	if (vertice == NULL){
+		fprintf(stderr, "modifica_estado_visitavel: vertice invalido\n");
+		exit(EXIT_FAILURE);
+	}
+
+    vertice->estado_visitavel = n;
+}
+
 int obtem_dist_dijkstra(vertice_t* vertice)
 {
 	if (vertice == NULL){
@@ -185,6 +199,16 @@ aeroporto_t * obtem_aeroporto(vertice_t* vertice)
 
 	return vertice->aeroporto;
 }
+
+int obtem_estado_visitavel(vertice_t* vertice)
+{
+	if (vertice == NULL){
+		fprintf(stderr, "obtem_estado_visitavel: vertice invalido\n");
+		exit(EXIT_FAILURE);
+	}
+
+	return vertice->estado_visitavel;
+}
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
@@ -201,6 +225,7 @@ vertice_t *cria_vertice(int id, aeroporto_t* aeroporto)
 
 	p->id = id;
 	p->aeroporto = aeroporto;
+	p->estado_visitavel = FALSE;
 	p->arestas = cria_lista_enc();
 	p->id_grupo = -1;
 	p->pai = NULL;

@@ -2,7 +2,7 @@
  ============================================================================
  Nome        : info_voo.h
  Autor		 : Vítor Faccio
- Versão	     : 1.0
+ Versão	     : 2.0
  Copyright   : Vítor Faccio, todos os direitos reservados
  Descrição	 :
  ============================================================================
@@ -16,7 +16,9 @@
 
 typedef struct informacoes 	info_t;
 
-info_t* 	cria_info(void *pointer);
+info_t* 	cria_info(void);
+void 		info_set_aeronave(info_t *info, lista_enc_t *lista_aeronaves);
+void 		info_set_aeroportos(info_t *info, void *pointer);
 
 aeronave_t*		info_obter_aeronave(info_t *info);
 aeroporto_t* 	info_obter_origem(info_t *info);

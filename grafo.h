@@ -2,7 +2,7 @@
  ============================================================================
  Nome        : grafo.h
  Autor		 : Vítor Faccio
- Versão	     : 1.0
+ Versão	     : 2.0
  Copyright   : Vítor Faccio, todos os direitos reservados
  Descrição	 :
  ============================================================================

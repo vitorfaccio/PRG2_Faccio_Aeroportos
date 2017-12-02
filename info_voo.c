@@ -2,7 +2,7 @@
  ============================================================================
  Nome        : info_voo.c
  Autor		 : Vítor Faccio
- Versão	     : 1.0
+ Versão	     : 2.0
  Copyright   : Vítor Faccio, todos os direitos reservados
  Descrição	 :
  ============================================================================
@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include "info_voo.h"
 
+#define FALSE 0
+#define TRUE 1
+
 struct informacoes {
 	/** O voo dependerá de uma série de detalhes fornecidos pelo usuário. Dentre elas são: **/
 	aeronave_t *aeronave;
@@ -19,15 +22,8 @@ struct informacoes {
 	aeroporto_t *destino;
 };
 
-info_t * cria_info(void *pointer)		// G a m b i a r r a
+info_t* cria_info(void)
 {
-	grafo_t *grafo = pointer;
-
-	if (grafo == NULL) {
-		perror("cria_info: grafo nulo");
-		exit(EXIT_FAILURE);
-	}
-
 	info_t *p = NULL;
 	p = malloc(sizeof(info_t));
 
@@ -36,41 +32,29 @@ info_t * cria_info(void *pointer)		// G a m b i a r r a
 		exit(EXIT_FAILURE);
 	}
 
-	int id_origem, id_destino, id_aeronave;
+	p->aeronave = NULL;
+	p->origem = NULL;
+	p->destino = NULL;
 
+	return p;
+}
 
-	/** Inicializar a comunicação e fornecer lista de aeroportos: **/
-	printf("Seja bem vindo, usuario! Abaixo esta' a lista de aeroportos disponiveis, listados por numero de ID, codigo, cidade e pais.\n\n");
-	no_t* no_aeroporto = obter_lista_vertices(grafo);
-	vertice_t* vertice_aeroporto;
-	aeroporto_t* aeroporto;
-	while(no_aeroporto != NULL){
-		vertice_aeroporto = obter_dado(no_aeroporto);
-		aeroporto = obtem_aeroporto(vertice_aeroporto);
-		printf("\t%d - %s: %s, %s\n",aeroporto_get_id(aeroporto),aeroporto_get_code(aeroporto),
-				aeroporto_get_cidade(aeroporto),aeroporto_get_pais(aeroporto));
-		no_aeroporto = obtem_proximo(no_aeroporto);
+void info_set_aeronave(info_t *info, lista_enc_t *lista_aeronaves)
+{
+	if (info == NULL) {
+		perror("info_set_aeronave: info nula");
+		exit(EXIT_FAILURE);
 	}
 
-	/** Receber o aeroporto de origem: **/
-	printf("Digite o ID do aeroporto de origem.\n");
-	scanf("%d",&id_origem);
-	id_destino = id_origem;
-	p->origem = obtem_aeroporto(procura_vertice(grafo,id_origem));
-
-	/** Receber o aeroporto de destino: **/
-	printf("\nDigite o ID do aeroporto de Destino.\n");
-	while(1){
-		scanf("%d",&id_destino);
-		if(id_destino != id_origem)
-			break;
-		printf("ID invalido, voce selecionou o proprio aeroporto de origem. Reinsira o aeroporto de destino.\n");
+	if (lista_aeronaves == NULL) {
+		perror("info_set_aeronave: lista_aeronaves nula");
+		exit(EXIT_FAILURE);
 	}
-	p->destino = obtem_aeroporto(procura_vertice(grafo,id_destino));
 
-	/** Receber o avião utilizado: **/
-	printf("Abaixo sao listados os avioes disponiveis para seu voo, com a respectiva autonomia de cada um.\n");
-	lista_enc_t* lista_aeronaves = ler_tabela_aeronaves("PRG2_Faccio_ListaAeronaves_v1.csv");
+	int id_aeronave;
+
+	printf("\tOla usuario, seja bem-vindo! \nAbaixo sao listados os avioes disponiveis para seu voo, com a respectiva autonomia de cada um.\n");
+
 	no_t* no_aeronave = obter_cabeca(lista_aeronaves);
 
 	aeronave_t* aeronave;
@@ -88,13 +72,58 @@ info_t * cria_info(void *pointer)		// G a m b i a r r a
 	no_aeronave = obter_cabeca(lista_aeronaves);
 	while(no_aeronave != NULL){
 		if(aeronave_obter_id(obter_dado(no_aeronave)) == id_aeronave){
-			p->aeronave = obter_dado(no_aeronave);
+			info->aeronave = obter_dado(no_aeronave);
 			break;
 		}
 		no_aeronave = obtem_proximo(no_aeronave);
 	}
+}
 
-	return p;
+void info_set_aeroportos(info_t *info, void *pointer)
+{
+	grafo_t *grafo = pointer;
+
+	if (info == NULL) {
+		perror("info_set_aeroportos: info nula");
+		exit(EXIT_FAILURE);
+	}
+
+	if (grafo == NULL) {
+		perror("info_set_aeroportos: grafo nulo");
+		exit(EXIT_FAILURE);
+	}
+
+	int id_origem, id_destino;
+
+	printf("\nAbaixo esta' a lista de aeroportos disponiveis, enumerados por ID, codigo, cidade e pais.\n\n");
+	no_t* no_aeroporto = obter_lista_vertices(grafo);
+	vertice_t* vertice_aeroporto;
+	aeroporto_t* aeroporto;
+	while(no_aeroporto != NULL){
+		vertice_aeroporto = obter_dado(no_aeroporto);
+		if(obtem_estado_visitavel(vertice_aeroporto) == TRUE){
+			aeroporto = obtem_aeroporto(vertice_aeroporto);
+			printf("\t%d - %s: %s, %s\n",aeroporto_get_id(aeroporto),aeroporto_get_code(aeroporto),
+					aeroporto_get_cidade(aeroporto),aeroporto_get_pais(aeroporto));
+		}
+		no_aeroporto = obtem_proximo(no_aeroporto);
+	}
+
+	/** Receber o aeroporto de origem: **/
+	printf("Digite o ID do aeroporto de origem.\n");
+	scanf("%d",&id_origem);
+	id_destino = id_origem;
+	info->origem = obtem_aeroporto(procura_vertice(grafo,id_origem));
+
+	/** Receber o aeroporto de destino: **/
+	printf("\nDigite o ID do aeroporto de Destino.\n");
+	while(1){
+		scanf("%d",&id_destino);
+		if(id_destino != id_origem)
+			break;
+		printf("ID invalido, voce selecionou o proprio aeroporto de origem. Reinsira o aeroporto de destino.\n");
+	}
+	info->destino = obtem_aeroporto(procura_vertice(grafo,id_destino));
 }
 
 aeronave_t* info_obter_aeronave(info_t *info)

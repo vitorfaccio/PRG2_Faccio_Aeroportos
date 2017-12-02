@@ -2,7 +2,7 @@
  ============================================================================
  Name        : arq_read.c
  Author      : Vítor Faccio
- Version     : 1.0
+ Version     : 2.0
  Copyright   : Vítor Faccio, todos os direitos reservados
  Descrição	 : Leitura das planilhas em .ods com as informações dos
  aeroportos e dos aviões

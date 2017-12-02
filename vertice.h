@@ -73,6 +73,7 @@ void modifica_dist_dijkstra(vertice_t* vertice, int n);
 void modifica_anterior_dijkstra(vertice_t* vertice, vertice_t* anterior);
 void modifica_visita_dijkstra(vertice_t* vertice, int n);
 void modifica_aeroporto(vertice_t* vertice, aeroporto_t* aeroporto);
+void modifica_estado_visitavel(vertice_t* vertice, int n);
 
 int 			obtem_dist_dijkstra(vertice_t* vertice);
 vertice_t * 	obtem_anterior_dijkstra(vertice_t* vertice);
@@ -81,5 +82,6 @@ int 			obtem_dist(vertice_t* vertice);
 vertice_t * 	obtem_pai(vertice_t* vertice);
 int 			obtem_visita(vertice_t* vertice);
 aeroporto_t * 	obtem_aeroporto(vertice_t* vertice);
+int 			obtem_estado_visitavel(vertice_t* vertice);
 
 #endif /* GRAFO_VERTICE_H_ */
