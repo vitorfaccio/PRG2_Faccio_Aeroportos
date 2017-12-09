@@ -17,7 +17,7 @@
 
 int main()
 {
-    lista_enc_t* lista_vertices_aeroportos = ler_tabela_aeroportos("PRG2_Faccio_ListaAeroportos_v2.csv");
+    lista_enc_t* lista_vertices_aeroportos = ler_tabela_aeroportos("PRG2_Faccio_ListaAeroportos_v3.csv");
     lista_enc_t* lista_aeronaves = ler_tabela_aeronaves("PRG2_Faccio_ListaAeronaves_v1.csv");
 	aeroporto_t* aeroporto;
 	grafo_t* grafo;
@@ -87,6 +87,7 @@ printf("Autonomia da aeronave: %d km\n",aeronave_obter_autonomia(info_obter_aero
 	exportar_grafo_dot("grafo_semmovimento.dot", grafo);
 
 	/** Liberar memória: **/
+	libera_full(lista_vertices_aeroportos, lista_aeronaves, grafo, info, pilha);
 
     return 0;
 }

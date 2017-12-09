@@ -119,6 +119,31 @@ lista_enc_t * ler_tabela_aeronaves(char * arquivo)
 	return lista;
 }
 
+void libera_aeroporto(aeroporto_t* aeroporto)
+{
+	if (aeroporto == NULL){
+		perror("libera_aeroporto:");
+		exit(EXIT_FAILURE);
+	}
+
+	free(aeroporto->nome);
+	free(aeroporto->code);
+	free(aeroporto->pais);
+	free(aeroporto->cidade);
+	free(aeroporto);
+}
+
+void libera_aeronave(aeronave_t* aeronave)
+{
+	if (aeronave == NULL){
+		perror("libera_aeronave:");
+		exit(EXIT_FAILURE);
+	}
+
+	free(aeronave->nome);
+	free(aeronave);
+}
+
 aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pais, char * cidade, int mov_anual, int * coord_latitude, char char_lat, int * coord_longitude, char char_long)
 {
 	aeroporto_t * p = malloc(sizeof(aeroporto_t));
@@ -203,6 +228,7 @@ aeroporto_t * cria_aeroporto(int id, char * buffer_nome, char * code, char * pai
 
 	return p;
 }
+
 
 aeronave_t * cria_aeronave(int id, char * buffer_nome, int autonomia)
 {

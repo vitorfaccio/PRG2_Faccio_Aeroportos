@@ -50,7 +50,15 @@ no_t* busca_min_dist (lista_enc_t* lista)
 pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 {
     if (grafo == NULL)	{
-			fprintf(stderr,"dijkstra: grafo invalido!");
+			fprintf(stderr,"dijkstra: grafo nulo!");
+			exit(EXIT_FAILURE);
+	}
+	if (fonte == NULL)	{
+			fprintf(stderr,"dijkstra: fonte nula!");
+			exit(EXIT_FAILURE);
+	}
+	if (destino == NULL)	{
+			fprintf(stderr,"dijkstra: destino nulo!");
 			exit(EXIT_FAILURE);
 	}
 
@@ -103,7 +111,6 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 			vertice_v = remover_no(lista_prioridade,no_vertice);
 	}
 
-
 	vertice_v = destino;
 	while(obtem_anterior_dijkstra(vertice_v) != NULL){
         push(vertice_v,pilha_caminho);
@@ -113,115 +120,9 @@ pilha_t * dijkstra(grafo_t *grafo, vertice_t* fonte, vertice_t* destino)
 
 	free(lista_prioridade);
     return pilha_caminho;
-
 }
-
-void bfs(grafo_t *grafo, vertice_t* inicial)        // Busca em largura         - FILA
-{
-    fila_t* fila = cria_fila();
-    vertice_t* vertice_busca;
-    vertice_t* vertice_adjacente;
-
-    no_t* no_verticeatual = obter_cabeca(grafo->vertices);
-    no_t* no_aresta;
-
-    while(no_verticeatual != NULL){
-        modifica_dist(obter_dado(no_verticeatual),INFINITO);
-        modifica_pai(obter_dado(no_verticeatual),NULL);
-        no_verticeatual = obtem_proximo(no_verticeatual);
-    }
-
-    modifica_dist(inicial,0);
-    enqueue(inicial,fila);
-
-    while(fila_vazia(fila) == FALSE){
-        vertice_busca = dequeue(fila);
-        //explorar lista de arestas
-        no_aresta = obter_cabeca(vertice_get_arestas(vertice_busca));
-        while(no_aresta != NULL){
-            vertice_adjacente = aresta_get_adjacente(obter_dado(no_aresta));
-            if(obtem_dist(vertice_adjacente) == INFINITO){
-                modifica_dist(vertice_adjacente,obtem_dist(vertice_busca)+1);
-                modifica_pai(vertice_adjacente,vertice_busca);
-                enqueue(vertice_adjacente,fila);
-            }
-            no_aresta = obtem_proximo(no_aresta);
-        }
-    }
-}
-
-void dfs(grafo_t *grafo, vertice_t* inicial)        // Busca em profundidade    - PILHA
-{
-	pilha_t* pilha = cria_pilha();
-    vertice_t* vertice_busca;
-    vertice_t* vertice_adjacente;
-
-    no_t* no_verticeatual = obter_cabeca(grafo->vertices);
-    no_t* no_aresta;
-
-	while(no_verticeatual != NULL){
-        modifica_visita(obter_dado(no_verticeatual),0);
-        no_verticeatual = obtem_proximo(no_verticeatual);
-    }
-
-	push(inicial,pilha);
-	while(pilha_vazia(pilha) == FALSE){
-		vertice_busca = pop(pilha);
-		if(obtem_visita(vertice_busca) == 0){
-			modifica_visita(vertice_busca,1);
-
-			//Para todo v adjacente:
-			no_aresta = obter_cabeca(vertice_get_arestas(vertice_busca));
-			while(no_aresta != NULL){
-				vertice_adjacente = aresta_get_adjacente(obter_dado(no_aresta));
-				push(vertice_adjacente,pilha);
-				no_aresta = obtem_proximo(no_aresta);
-			}
-		}
-	}
-}
-
-void teste_bfs (grafo_t * grafo, vertice_t * inicial)
-{
-	no_t* no_vertice = obter_cabeca(obter_lista_vertices(grafo));
-	vertice_t* vertice = obter_dado(no_vertice);
-	bfs(grafo,inicial);
-	printf("Analise de busca em largura, vertice inicial: %d ",vertice_get_id(inicial));
-
-	while(vertice != NULL){
-		if((obtem_dist(vertice) != INFINITO) && (vertice != inicial)){
-			printf("\nVertice %d , endereco 0x%X:",
-				vertice_get_id(vertice),
-				vertice);
-			printf("\n\tDistancia:%d \n\tPai: %d, endereco 0x%X \n",
-				obtem_dist(vertice),
-				vertice_get_id(obtem_pai(vertice)),
-				obtem_pai(vertice));
-		}
-		no_vertice = obtem_proximo(no_vertice);
-		vertice = obter_dado(no_vertice);
-	}
-}
-
-void teste_dfs (grafo_t * grafo, vertice_t * inicial)
-{
-	no_t* no_vertice = obter_cabeca(obter_lista_vertices(grafo));
-	vertice_t* vertice = obter_dado(no_vertice);
-	dfs(grafo,inicial);
-	printf("Analise de busca em profundidade, vertice inicial: %d ",vertice_get_id(inicial));
-
-	while(vertice != NULL){
-		if((obtem_visita(vertice) == 1) && (vertice != inicial)){
-			printf("\nVertice %d , endereco 0x%X:",
-				vertice_get_id(vertice),
-				vertice);
-			printf("\n\tVisitado!\n");		// Tem coisa a melhorar aí, só dizer que foi visitado não adianta tanto
-		}
-		no_vertice = obtem_proximo(no_vertice);
-		vertice = obter_dado(no_vertice);
-	}
-}
-//--------------------------------------------------------------------------------------
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
 
 grafo_t *cria_grafo(int id)
 {
@@ -476,17 +377,15 @@ int obter_grafo_size(grafo_t *grafo)
 	return grafo->n_vertices;
 }
 
-int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double dificuldade)
+int get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double dist)
 {
 	double movimento = (double)(aeroporto_get_movimento(obtem_aeroporto(vertice_1))) +
 					   (double)(aeroporto_get_movimento(obtem_aeroporto(vertice_2)));
-	/** O movimento está na ordem de milhares, será dividido por 10000 para adequar-se a uma ordem boa **/
+	movimento /= 10000;						/**	CARECE DE AJUSTES **/
 
-	movimento /= 10000;
+	//dist += dist/movimento;	/**	CARECE DE AJUSTES **/
 
-	dificuldade += dificuldade/movimento;	/**	CARECE DE AJUSTES **/
-
-	return (int)dificuldade;
+	return (int)dist;
 }
 
 double haversine(double latitude_1, double longitude_1, double latitude_2, double longitude_2)
@@ -500,5 +399,36 @@ double haversine(double latitude_1, double longitude_1, double latitude_2, doubl
 	dist *= acos(sin(latitude_1)*sin(latitude_2) + cos(latitude_1)*cos(latitude_2)*cos(longitude_1-longitude_2));
 
 	return dist;
+}
+
+void libera_full(lista_enc_t* lista_vertices_aeroportos,lista_enc_t* lista_aeronaves,grafo_t* grafo,void* info,pilha_t* pilha)
+{//										OK								OK					OK			 OK
+// Libera lista de vértices de aeroportos:
+	no_t* no_2;
+	no_t* no_1 = obter_cabeca(lista_vertices_aeroportos);
+	vertice_t* vertice_1;
+	while(no_1 != NULL){
+		libera_aeroporto(obter_dado(no_1));
+		no_2 = no_1;
+		no_1 = obtem_proximo(no_1);
+		free(no_2);
+	}
+	free(lista_vertices_aeroportos);
+
+	no_1 = obter_cabeca(lista_aeronaves);
+	while(no_1 != NULL){
+		libera_aeronave(obter_dado(no_1));
+		no_2 = no_1;
+		no_1 = obtem_proximo(no_1);
+		free(no_2);
+	}
+	free(lista_vertices_aeroportos);
+
+	libera_grafo(grafo);
+
+	free(info);
+
+	libera_pilha(pilha);
+
 }
 

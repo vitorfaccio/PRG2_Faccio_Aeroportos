@@ -40,8 +40,11 @@ char 	aeroporto_get_char_long(aeroporto_t * aeroporto);
 double 	aeroporto_get_latitude(aeroporto_t * aeroporto);
 double 	aeroporto_get_longitude(aeroporto_t * aeroporto);
 
-int aeronave_obter_id(aeronave_t* aeronave);
-char* aeronave_obter_nome(aeronave_t* aeronave);
-int aeronave_obter_autonomia(aeronave_t* aeronave);
+int 	aeronave_obter_id(aeronave_t* aeronave);
+char* 	aeronave_obter_nome(aeronave_t* aeronave);
+int 	aeronave_obter_autonomia(aeronave_t* aeronave);
+
+void 	libera_aeroporto(aeroporto_t* aeroporto);
+void 	libera_aeronave(aeronave_t* aeronave);
 
 #endif // ARQ_READ_H_INCLUDED

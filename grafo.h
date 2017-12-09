@@ -30,7 +30,7 @@ void 			exportar_grafo_dot(const char *filename, grafo_t *grafo);
 void 			libera_grafo (grafo_t *grafo);
 no_t*			obter_lista_vertices(grafo_t *grafo);
 lista_enc_t*	obter_lista_enc_vertices(grafo_t *grafo);
-int 			get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double dificuldade);
+int 			get_dificuldade_vertices(vertice_t *vertice_1, vertice_t *vertice_2, double dist);
 double 			haversine(double latitude_1, double longitude_1, double latitude_2, double longitude_2);
 
 no_t*			busca_menos_distante(lista_enc_t *Q);
@@ -39,9 +39,7 @@ lista_enc_t*	componentes_conexos(grafo_t *grafo);
 
 no_t* 			busca_min_dist (lista_enc_t* lista);
 pilha_t* 		dijkstra(grafo_t *grafo, vertice_t *fonte, vertice_t *destino);
-void 			bfs(grafo_t *grafo, vertice_t* inicial);
-void 			dfs(grafo_t *grafo, vertice_t* inicial);
-void 			teste_bfs (grafo_t * grafo, vertice_t * inicial);
-void 			teste_dfs (grafo_t * grafo, vertice_t * inicial);
+
+void 			libera_full(lista_enc_t* lista_vertices_aeroportos,lista_enc_t* lista_aeronaves,grafo_t* grafo,void* info,pilha_t* pilha);
 
 #endif /* GRAFO_GRAFO_H_ */
